@@ -160,7 +160,7 @@
           height: 80px;
           top: -40px;
           left: -40px;
-          transform: rotate(var(--angle)) translateX(170px);
+          transform: rotate(var(--angle)) translateX(280px);
         }
         .font-headline-lg {
           font-size: 32px !important;
@@ -202,7 +202,7 @@
         height: 140px;
         top: -70px;
         left: -70px;
-        transform: rotate(var(--angle)) translateX(360px);
+        transform: rotate(var(--angle)) translateX(500px);
       }
       .orbit-img {
         width: 100%;
@@ -425,12 +425,12 @@
       firebase.initializeApp(firebaseConfig);
       const db = firebase.firestore();
 
-      // 1. Orbit Sprite System — 6 sprites circling the main form
+      // 1. Orbit Sprite System — 8 sprites circling the main form
       const orbitContainer = document.createElement('div');
       orbitContainer.id = 'orbit-container';
       document.body.appendChild(orbitContainer);
 
-      const angles = [0, 60, 120, 180, 240, 300];
+      const angles = [0, 45, 90, 135, 180, 225, 270, 315];
       const orbitImgs = [];
 
       angles.forEach((angle) => {
@@ -449,12 +449,12 @@
         orbitImgs.push(img);
       });
 
-      const spriteNums = [1,2,3,4,5,6,7,8,9,10,11,13,14,15];
+      const spriteNums = [1,2,3,4,5,6,7,9,10,11,13,14,15];
 
       function shuffleOrbit() {
         const picks = [];
         const pool = [...spriteNums];
-        while (picks.length < 6) {
+        while (picks.length < 8) {
           const idx = Math.floor(Math.random() * pool.length);
           picks.push(pool.splice(idx, 1)[0]);
         }
