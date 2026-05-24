@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="light" lang="en" style="">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -216,11 +216,6 @@
         will-change: transform;
       }
 
-      /* 3D-ish Interactive Gift Box */
-      #gift-box-container {
-        perspective: 1000px;
-      }
-
       .gift-box {
         position: relative;
         width: 240px;
@@ -354,34 +349,20 @@
         will-change: transform, opacity;
       }
 
-      /* Mascot Peek */
-      @keyframes mascot-peek {
-        0% {
-          transform: translateY(100%);
-        }
-        20%,
-        50% {
-          transform: translateY(0);
-        }
-        100% {
-          transform: translateY(100%);
-        }
-      }
-      .mascot-peek {
-        animation: mascot-peek 3s ease-in-out forwards;
+      .mascot {
         background-image: url("assets/8.png");
         background-size: cover;
         background-position: center;
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
         position: absolute;
-        bottom: 50px;
+        bottom: 20px;
         left: 50%;
-        margin-left: -40px;
+        margin-left: -60px;
         z-index: 1;
         border-radius: 50%;
         pointer-events: none;
-        box-shadow: 0 4px 12px rgba(124, 86, 55, 0.2);
+        box-shadow: 0 4px 16px rgba(124, 86, 55, 0.25);
       }
     </style>
   </head>
@@ -392,19 +373,18 @@
       <div class="flex flex-col items-center mb-lg relative z-10">
         <div class="inline-block px-lg py-sm rounded-full backdrop-blur-sm bg-white/30 shadow-lg shadow-primary-container/10 border border-white/40 cloud-text">
           <h1 class="font-headline-lg text-headline-lg text-primary">
-            Hey Bro! 💖
+            Hey Shiv! 💖
           </h1>
         </div>
         <div class="inline-block px-md py-sm rounded-full backdrop-blur-sm bg-white/25 shadow-md shadow-primary-container/10 border border-white/30 mt-md cloud-text">
           <p class="font-body-lg text-body-lg text-on-surface-variant">
-            A tiny surprise just for you... make a wish and drop it in the gift
-            box ✨
+            Make a wish ✨
           </p>
         </div>
       </div>
       <!-- Wish Card -->
       <div
-        class="glass-card rounded-xl p-lg w-full max-w-md relative z-20 transition-all duration-500"
+        class="glass-card rounded-xl p-md w-full max-w-sm relative z-20 transition-all duration-500"
         id="wish-container"
       >
         <div class="flex flex-col gap-md" id="card-content">
@@ -427,7 +407,7 @@
         class="mt-xl relative z-30 flex items-center justify-center"
         id="gift-box-container"
       >
-        <div class="mascot-peek hidden" id="mascot"></div>
+        <div class="mascot" id="mascot"></div>
         <div class="gift-box" id="gift-box">
           <div class="gift-lid"></div>
           <div class="gift-body"></div>
@@ -478,19 +458,19 @@
       }
 
       shuffleOrbit();
-      const spriteInterval = setInterval(shuffleOrbit, 5000);
+      const spriteInterval = setInterval(shuffleOrbit, 2000);
 
       // 2. Falling background hearts
-      var fallColors = ['#7c5637', '#c44b6b', '#d4a847', '#b8546a', '#5c5d6e'];
-      for (var i = 0; i < 25; i++) {
-        var el = document.createElement('div');
+      const fallColors = ['#7c5637', '#c44b6b', '#d4a847', '#b8546a', '#5c5d6e'];
+      for (let i = 0; i < 25; i++) {
+        const el = document.createElement('div');
         el.className = 'falling-particle';
-        var size = 8 + Math.random() * 20;
+        const size = 8 + Math.random() * 20;
         el.style.width = size + 'px';
         el.style.height = size + 'px';
         el.style.left = Math.random() * 100 + 'vw';
         el.style.background = fallColors[Math.floor(Math.random() * fallColors.length)];
-        var dur = 8 + Math.random() * 10;
+        const dur = 8 + Math.random() * 10;
         el.style.animationDuration = dur + 's';
         el.style.animationDelay = -(Math.random() * dur) + 's';
         document.body.appendChild(el);
@@ -556,7 +536,6 @@
             giftBox.classList.add("scale-110");
 
             // Show mascot after success
-            triggerMascot();
           }, 500);
         }, 2000);
       }
@@ -591,16 +570,7 @@
         }
       }
 
-      // 3. Mascot Peek Logic
-      function triggerMascot() {
-        const mascot = document.getElementById("mascot");
-        mascot.classList.remove("hidden");
-        setTimeout(() => {
-          mascot.classList.add("hidden");
-        }, 5000);
-      }
-
-      // Interactive mouse trail (throttled)
+      // Mouse trail (throttled)
       let lastTrail = 0;
       document.addEventListener("mousemove", (e) => {
         const now = Date.now();
