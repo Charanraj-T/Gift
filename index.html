@@ -418,7 +418,13 @@
       </div>
     </main>
 
+    <script src="firebase-config.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
     <script>
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
       // 1. Orbit Sprite System — 6 sprites circling the main form
       const orbitContainer = document.createElement('div');
       orbitContainer.id = 'orbit-container';
@@ -484,6 +490,11 @@
           alert("Don't forget to write your wish first! ✨");
           return;
         }
+
+        db.collection("wishes").add({
+          text: wishText.trim(),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
         const wishContainer = document.getElementById("wish-container");
         const giftBox = document.getElementById("gift-box");
