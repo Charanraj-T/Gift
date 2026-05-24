@@ -369,18 +369,19 @@
       }
       .mascot-peek {
         animation: mascot-peek 3s ease-in-out forwards;
-        background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBtknmCiJ4y9UtKAHDUJnpgnOJdEh8YI6KdSTuFlAuO3xc_pJ652PtwClHXaU9LsC-aMtFrph7rZ6GXqtFPQ7c0Vq5doxmY1s3rYpquYVTPO3vi0FHITENb7nyILMZ8KkNKVdkaXTV_F_zGJ8rmL-NKixsODCNxvUoTdVXwctN7a8Eb-tYIo-NzBaXD434Aj4_IUWw_jkedVdZ_cmdQ1TQbj4UuqGKR2AGhXcAUWfR53LePz2HlAgxn6DlTpGGvvWdYKr0PFZYTzumV");
-        background-size: 800px 1328px;
-        background-position: -430px -40px;
-        width: 100px;
-        height: 100px;
+        background-image: url("assets/8.png");
+        background-size: cover;
+        background-position: center;
+        width: 80px;
+        height: 80px;
         position: absolute;
-        bottom: 60px;
+        bottom: 50px;
         left: 50%;
-        margin-left: -50px;
+        margin-left: -40px;
         z-index: 1;
-        border-radius: 50% 50% 0 0;
+        border-radius: 50%;
         pointer-events: none;
+        box-shadow: 0 4px 12px rgba(124, 86, 55, 0.2);
       }
     </style>
   </head>
@@ -489,8 +490,9 @@
         el.style.height = size + 'px';
         el.style.left = Math.random() * 100 + 'vw';
         el.style.background = fallColors[Math.floor(Math.random() * fallColors.length)];
-        el.style.animationDuration = (8 + Math.random() * 10) + 's';
-        el.style.animationDelay = (Math.random() * 12) + 's';
+        var dur = 8 + Math.random() * 10;
+        el.style.animationDuration = dur + 's';
+        el.style.animationDelay = -(Math.random() * dur) + 's';
         document.body.appendChild(el);
       }
 
@@ -548,8 +550,9 @@
                 `;
             wishContainer.parentNode.insertBefore(success, wishContainer);
 
-            // Box settles and glows
+            // Close box and settle
             giftBox.classList.remove("box-impact");
+            giftBox.classList.remove("box-open");
             giftBox.classList.add("scale-110");
 
             // Show mascot after success
