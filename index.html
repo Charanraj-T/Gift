@@ -21,10 +21,10 @@
               "surface-dim": "#dbd9d9",
               outline: "#82746b",
               "inverse-surface": "#303030",
-              "on-surface": "#1b1c1c",
+              "on-surface": "#f2f0f0",
               "secondary-fixed-dim": "#c5c5d8",
               "on-secondary-container": "#626374",
-              "inverse-on-surface": "#f2f0f0",
+              "inverse-on-surface": "#1b1c1c",
               background: "#fbf9f8",
               "tertiary-container": "#edced1",
               secondary: "#5c5d6e",
@@ -58,9 +58,9 @@
               "on-secondary-fixed-variant": "#444655",
               "outline-variant": "#d4c3b9",
               "secondary-fixed": "#e1e1f5",
-              "on-surface-variant": "#50453c",
+              "on-surface-variant": "#e8ddd4",
               "tertiary-fixed": "#fbdbde",
-              primary: "#7c5637",
+              primary: "#ffdcc3",
               "surface-container": "#efeded",
             },
             borderRadius: {
@@ -118,21 +118,37 @@
     </script>
     <style>
       body {
-        background: linear-gradient(
-          135deg,
-          #ffdcc3 0%,
-          #fbdbde 50%,
-          #e1e1f5 100%
-        );
         min-height: 100vh;
-        overflow-x: hidden;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        filter: brightness(1.1) contrast(1) saturate(1.05) drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+      }
+      #snow-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .lens-blur {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        -webkit-mask-image: radial-gradient(circle at center, transparent 40%, black 90%);
+        mask-image: radial-gradient(circle at center, transparent 40%, black 90%);
       }
 
       .glass-card {
         backdrop-filter: blur(12px);
-        background: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 20px 40px rgba(124, 86, 55, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.45);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.15);
       }
 
       .bounce-hover:hover {
@@ -145,7 +161,7 @@
       }
 
       .gradient-btn {
-        background: linear-gradient(90deg, #efbc96, #debfc2);
+        background: linear-gradient(90deg, #c44b6b, #7c5637);
       }
 
       /* Cloud text style */
@@ -367,21 +383,19 @@
     </style>
   </head>
   <body class="font-body-md text-on-surface">
+    <canvas id="snow-canvas"></canvas>
+    <div class="lens-blur" aria-hidden="true"></div>
     <main
       class="flex flex-col items-center justify-center min-h-screen px-container-margin py-xl relative overflow-hidden"
     >
       <div class="flex flex-col items-center mb-lg relative z-10">
-        <div class="inline-block px-lg py-sm rounded-full backdrop-blur-sm bg-white/30 shadow-lg shadow-primary-container/10 border border-white/40 cloud-text">
-          <h1 class="font-headline-lg text-headline-lg text-primary">
+          <h1 class="font-headline-lg text-headline-lg text-primary text-center">
             Hey Shiv! 💖
           </h1>
-        </div>
-        <div class="inline-block px-md py-sm rounded-full backdrop-blur-sm bg-white/25 shadow-md shadow-primary-container/10 border border-white/30 mt-md cloud-text">
-          <p class="font-body-lg text-body-lg text-on-surface-variant">
+          <p class="font-body-lg text-body-lg text-on-surface-variant text-center mt-md">
             Make a wish ✨
           </p>
         </div>
-      </div>
       <!-- Wish Card -->
       <div
         class="glass-card rounded-xl p-md w-full max-w-sm relative z-20 transition-all duration-500"
@@ -389,15 +403,15 @@
       >
         <div class="flex flex-col gap-md" id="card-content">
           <textarea
-            class="w-full h-32 bg-secondary-container/30 border-none rounded-lg p-md font-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:ring-2 focus:ring-primary-container transition-all resize-none"
-            id="wish-text"
+            class="w-full h-32 bg-black/30 border border-white/15 rounded-lg p-md font-body-md text-on-surface placeholder:text-on-surface-variant/60 focus:ring-2 focus:ring-white/40 transition-all resize-none"
+            id="wish-text" aria-label="Your birthday wish"
             placeholder="Write your wish here..."
           ></textarea>
           <button
-            class="gradient-btn bounce-hover flex items-center justify-center gap-sm py-md px-lg rounded-full text-white font-label-md text-label-md shadow-lg shadow-primary-container/20 group"
+            class="gradient-btn bounce-hover flex items-center justify-center gap-sm py-sm px-md rounded-full text-white font-label-md text-label-md shadow-lg shadow-black/30 group"
             onclick="submitWish()"
           >
-            <span class="material-symbols-outlined">redeem</span>
+            <span class="material-symbols-outlined" aria-hidden="true">redeem</span>
             Drop my wish 🎁
           </button>
         </div>
@@ -465,6 +479,9 @@
 
       shuffleOrbit();
       const spriteInterval = setInterval(shuffleOrbit, 2000);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) clearInterval(spriteInterval);
+      });
 
       // 2. Falling background hearts
       const fallColors = ['#7c5637', '#c44b6b', '#d4a847', '#b8546a', '#5c5d6e'];
@@ -494,6 +511,9 @@
         db.collection("wishes").add({
           text: wishText.trim(),
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => {
+          console.error("Wish submission failed:", err);
+          alert("Couldn't save your wish. Please try again.");
         });
 
         const wishContainer = document.getElementById("wish-container");
@@ -606,5 +626,6 @@
         }
       });
     </script>
+    <script src="snow-bg.js"></script>
   </body>
 </html>

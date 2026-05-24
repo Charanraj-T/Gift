@@ -21,10 +21,10 @@
               "surface-dim": "#dbd9d9",
               outline: "#82746b",
               "inverse-surface": "#303030",
-              "on-surface": "#1b1c1c",
+              "on-surface": "#f2f0f0",
               "secondary-fixed-dim": "#c5c5d8",
               "on-secondary-container": "#626374",
-              "inverse-on-surface": "#f2f0f0",
+              "inverse-on-surface": "#1b1c1c",
               background: "#fbf9f8",
               "tertiary-container": "#edced1",
               secondary: "#5c5d6e",
@@ -58,9 +58,9 @@
               "on-secondary-fixed-variant": "#444655",
               "outline-variant": "#d4c3b9",
               "secondary-fixed": "#e1e1f5",
-              "on-surface-variant": "#50453c",
+              "on-surface-variant": "#e8ddd4",
               "tertiary-fixed": "#fbdbde",
-              primary: "#7c5637",
+              primary: "#ffdcc3",
               "surface-container": "#efeded",
             },
             borderRadius: {
@@ -99,20 +99,41 @@
     </script>
     <style>
       body {
-        background: linear-gradient(135deg, #ffdcc3 0%, #fbdbde 50%, #e1e1f5 100%);
         min-height: 100vh;
-        overflow-x: hidden;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        filter: brightness(1.1) contrast(1) saturate(1.05) drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+      }
+      #snow-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .lens-blur {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        -webkit-mask-image: radial-gradient(circle at center, transparent 40%, black 90%);
+        mask-image: radial-gradient(circle at center, transparent 40%, black 90%);
       }
       .glass-card {
         backdrop-filter: blur(12px);
-        background: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 20px 40px rgba(124, 86, 55, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.45);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.15);
       }
       .wish-card {
         backdrop-filter: blur(8px);
-        background: rgba(255, 255, 255, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         transition: transform 0.2s ease;
       }
       .wish-card:hover {
@@ -121,7 +142,9 @@
     </style>
   </head>
   <body class="font-body-md text-on-surface">
-    <div class="max-w-2xl mx-auto px-container-margin py-xl">
+    <canvas id="snow-canvas"></canvas>
+    <div class="lens-blur" aria-hidden="true"></div>
+    <div class="max-w-2xl mx-auto px-container-margin py-xl relative z-10">
       <div class="text-center mb-lg">
         <a href="/" class="inline-flex items-center gap-sm text-primary hover:opacity-80 mb-md font-label-md">
           <span class="material-symbols-outlined">arrow_back</span>
@@ -176,8 +199,8 @@
                   <p class="font-body-lg text-on-surface">${escapeHtml(data.text)}</p>
                   <p class="font-label-md text-on-surface-variant/60 mt-xs text-xs">${time}</p>
                 </div>
-                <button onclick="deleteWish('${doc.id}')" class="text-on-surface-variant/40 hover:text-error transition-colors flex-shrink-0">
-                  <span class="material-symbols-outlined text-xl">delete</span>
+                <button onclick="deleteWish('${doc.id}')" aria-label="Delete wish" class="text-on-surface-variant/40 hover:text-error transition-colors flex-shrink-0">
+                  <span class="material-symbols-outlined text-xl" aria-hidden="true">delete</span>
                 </button>
               </div>
             `;
@@ -185,14 +208,15 @@
         });
 
       function deleteWish(id) {
-        db.collection('wishes').doc(id).delete();
+        db.collection('wishes').doc(id).delete().catch(err => console.error("Delete failed:", err));
       }
 
+      const escapeDiv = document.createElement('div');
       function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        escapeDiv.textContent = str;
+        return escapeDiv.innerHTML;
       }
     </script>
+    <script src="snow-bg.js"></script>
   </body>
 </html>
